@@ -1,28 +1,71 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
+import { clientPromise } from "@/utils/mongoAdapter";
+import User from "@/models/User";
 
-const adminEmail = process.env.ADMIN_EMAIL!;
-const adminPassword = process.env.ADMIN_PASSWORD!;
-
-export const authOptions = {
+export const authOptions: AuthOptions = {
+    adapter: MongoDBAdapter(clientPromise),
     providers: [
         CredentialsProvider({
-            name: "Admin Login",
+            name: "Credentials",
             credentials: {
-                email: { label: "Email", type: "email" },
+                email: { label: "Email", type: "text" },
                 password: { label: "Password", type: "password" },
             },
-            authorize(credentials) {
-                if (
-                    credentials?.email === adminEmail &&
-                    credentials?.password === adminPassword
-                ) {
-                    return { id: "1", email: adminEmail };
+            async authorize(credentials) {
+                if (!credentials?.email || !credentials?.password) {
+                    console.error("Email and password are required!");
+                    throw new Error("Email och lösenord krävs!");
                 }
-                return null;
+
+                await mongoose.connect(process.env.MONGODB_URI || "");
+                console.log("Connected to MongoDB in auth");
+
+                const user = await User.findOne({ email: credentials.email });
+                if (!user) {
+                    console.error("User not found!");
+                    throw new Error("User not found!");
+                }
+
+                const isPasswordCorrect = await bcrypt.compare(
+                    credentials.password,
+                    user.password
+                );
+
+                if (!isPasswordCorrect) {
+                    console.error("Incorrect password!");
+                    throw new Error("Fel lösenord!");
+                }
+
+                console.log("User authenticated successfully");
+                return {
+                    id: user._id,
+                    email: user.email,
+                    role: user.role,
+                };
             },
         }),
     ],
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.role = user.role;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            if (token) {
+                session.user.role = token.role;
+            }
+            return session;
+        },
+    },
+    session: {
+        strategy: "jwt",
+    },
     secret: process.env.NEXTAUTH_SECRET,
 };
 

@@ -1,17 +1,18 @@
 import { connectToDB } from "@/lib/db";
 import Product from "@/models/Product";
-import { NextResponse } from "next/server";
-import {getSession} from "next-auth/react";
+import { NextResponse, NextRequest } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export async function GET(req: Request) {
+export async function GET() {
     await connectToDB();
     const products = await Product.find({});
     return NextResponse.json(products);
 }
 
-export async function POST(req: Request) {
-    const session = await getSession({ req });
-    if (!session || session.user.role !== "admin") {
+export async function POST(req: NextRequest) {
+    const session = await getServerSession(req, authOptions);
+    if (!session || !session.user || (session.user as { role: string }).role !== "admin") {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

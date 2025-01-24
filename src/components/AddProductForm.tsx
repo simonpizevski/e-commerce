@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const AddProductForm = () => {
     const [name, setName] = useState("");
@@ -43,7 +43,7 @@ const AddProductForm = () => {
             </div>
             <div>
                 <label>Image URL:</label>
-                <input type="text" value={image} onChange={(e) => setImage(e.target.value)} required />
+                <input type="text" value={image} onChange={(e) => setImage(e.target.value)} />
             </div>
             <div>
                 <label>Stock:</label>
