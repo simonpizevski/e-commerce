@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
 
 const AddProductForm = () => {
     const [name, setName] = useState("");
@@ -28,29 +29,68 @@ const AddProductForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Name:</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-            </div>
-            <div>
-                <label>Description:</label>
-                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} required />
-            </div>
-            <div>
-                <label>Price:</label>
-                <input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} required />
-            </div>
-            <div>
-                <label>Image URL:</label>
-                <input type="text" value={image} onChange={(e) => setImage(e.target.value)} />
-            </div>
-            <div>
-                <label>Stock:</label>
-                <input type="number" value={stock} onChange={(e) => setStock(Number(e.target.value))} required />
-            </div>
-            <button type="submit">Add Product</button>
-        </form>
+        <Container maxWidth="sm" sx={{ mt: 4 }}>
+            <Typography variant="h5" component="h1" gutterBottom>
+                Add Product
+            </Typography>
+            <Box component="form" onSubmit={handleSubmit} noValidate>
+                <TextField
+                    label="Name"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                />
+                <TextField
+                    label="Description"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                />
+                <TextField
+                    label="Price"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    value={price}
+                    onChange={(e) => setPrice(Number(e.target.value))}
+                    required
+                />
+                <TextField
+                    label="Image URL"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={image}
+                    onChange={(e) => setImage(e.target.value)}
+                />
+                <TextField
+                    label="Stock"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    value={stock}
+                    onChange={(e) => setStock(Number(e.target.value))}
+                    required
+                />
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    sx={{ mt: 2 }}
+                >
+                    Add Product
+                </Button>
+            </Box>
+        </Container>
     );
 };
 

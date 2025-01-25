@@ -19,6 +19,7 @@ export default function Header() {
                     <Button color="inherit" onClick={() => router.push("/admin")}>
                         Admin
                     </Button>
+
                 </Box>
             </Toolbar>
         </AppBar>
