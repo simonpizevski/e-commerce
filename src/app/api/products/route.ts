@@ -3,6 +3,7 @@ import Product from "@/models/Product";
 import { NextResponse, NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getAllProducts } from "@/lib/products";
 
 declare module "next-auth" {
     interface Session {
@@ -17,11 +18,17 @@ declare module "next-auth" {
 
 export async function GET() {
     await connectToDB();
-    const products = await Product.find({});
-    return NextResponse.json(products);
+
+    try {
+        const products = await getAllProducts();
+        return NextResponse.json(products, { status: 200 });
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+    }
 }
 
-export async function POST(req: NextRequest) {
+/*export async function POST(req: NextRequest) {
     await connectToDB();
     const session = await getServerSession({req, ...authOptions});
 
@@ -31,9 +38,9 @@ export async function POST(req: NextRequest) {
 
     try {
         const data = await req.json();
-        const {name, description, price, image, stock} = data;
+        const {name, description, price, image, category, stock} = data;
 
-        if (!name || !description || !price || !image || !stock) {
+        if (!name || !description || !price || !category || !image || !stock) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
@@ -42,7 +49,8 @@ export async function POST(req: NextRequest) {
             description,
             price,
             image,
-            stock,
+            category,
+            stock
         });
 
         return NextResponse.json(product, {status: 201});
@@ -50,4 +58,4 @@ export async function POST(req: NextRequest) {
         console.error(error);
         return NextResponse.json({error: "Server error"}, {status: 500});
     }
-}
+}*/

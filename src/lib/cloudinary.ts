@@ -6,4 +6,11 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET, // Din API-hemlighet
 });
 
+export async function uploadImage(file: string): Promise<string> {
+    const result = await cloudinary.uploader.upload(file, {
+        folder: "products",
+    });
+    return result.secure_url;
+}
+
 export default cloudinary;

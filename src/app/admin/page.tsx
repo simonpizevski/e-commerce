@@ -12,15 +12,19 @@ type User = {
 export default function AdminPage() {
   const { data: session, status } = useSession();
 
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
+    if (status === "loading") {
+        return (
+            <p>
+                Verifying session... This might take a few seconds. Please wait.
+            </p>
+        );
+    }
 
   if (!session) {
     return <p>You must log in to access this page.</p>;
   }
 
-  const user = session.user as User;
+  const user = session?.user as User;
 
   if (!user || user.role !== "admin") {
     return <p>Access denied! Only admins can see this page.</p>;

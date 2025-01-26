@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Grid, Container, Typography, CircularProgress } from "@mui/material";
+import { Container, Typography, CircularProgress, Box } from "@mui/material";
 import ProductCard from "@/components/ProductCard";
 
 interface Product {
@@ -34,19 +34,34 @@ export default function ProductsPage() {
 
     return (
         <Container maxWidth="lg" sx={{ mt: 8 }}>
-            <Typography variant="h4" gutterBottom>
-                Våra produkter
+            <Typography variant="h4" component="h1" gutterBottom>
+                Products
             </Typography>
             {loading ? (
-                <CircularProgress />
-            ) : (
-                <Grid container spacing={4}>
+                <CircularProgress sx={{ display: "block", mt: 4, mx: "auto" }} />
+            ) : products.length > 0 ? (
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                        gap: 4,
+                        mt: 4,
+                    }}
+                >
                     {products.map((product) => (
-                        <Grid item key={product._id} xs={12} sm={6} md={4}>
-                            <ProductCard product={product} />
-                        </Grid>
+                        <ProductCard
+                            key={product._id}
+                            name={product.name}
+                            description={product.description}
+                            price={product.price}
+                            image={product.image}
+                        />
                     ))}
-                </Grid>
+                </Box>
+            ) : (
+                <Typography variant="body1" color="text.secondary" sx={{ mt: 4 }}>
+                    No products available.
+                </Typography>
             )}
         </Container>
     );

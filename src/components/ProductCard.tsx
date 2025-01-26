@@ -22,7 +22,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ name, description, price, ima
                 <Typography gutterBottom variant="h6" component="div">
                     {name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" noWrap>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 2,
+                        overflow: "hidden",
+                    }}
+                >
                     {description}
                 </Typography>
                 <Typography variant="h6" color="primary" sx={{ mt: 1 }}>

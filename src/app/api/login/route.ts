@@ -11,17 +11,17 @@ export async function POST(request: Request) {
         const { email, password } = await request.json();
 
         if (!email || !password) {
-            return NextResponse.json({ message: "Email och lösenord krävs" }, { status: 400 });
+            return NextResponse.json({ message: "Email and password are required!" }, { status: 400 });
         }
 
         const user = await User.findOne({ email });
         if (!user) {
-            return NextResponse.json({ message: "Felaktig email eller lösenord" }, { status: 401 });
+            return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
         }
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) {
-            return NextResponse.json({ message: "Felaktig email eller lösenord" }, { status: 401 });
+            return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
         }
 
         const token = jwt.sign(
@@ -35,10 +35,10 @@ export async function POST(request: Request) {
         );
 
         return NextResponse.json({
-            message: "Inloggning lyckades!",
+            message: "Login successful",
             token,
         });
     } catch (error: any) {
-        return NextResponse.json({ message: "Serverfel", error: error.message }, { status: 500 });
+        return NextResponse.json({ message: "Server error", error: error.message }, { status: 500 });
     }
 }
