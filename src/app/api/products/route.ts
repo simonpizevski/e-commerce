@@ -1,7 +1,7 @@
 import { connectToDB } from "@/lib/db";
 import Product from "@/models/Product";
 import { NextResponse, NextRequest } from "next/server";
-import { getServerSession, Session } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 declare module "next-auth" {
@@ -32,6 +32,10 @@ export async function POST(req: NextRequest) {
     try {
         const data = await req.json();
         const {name, description, price, image, stock} = data;
+
+        if (!name || !description || !price || !image || !stock) {
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        }
 
         const product = await Product.create({
             name,
