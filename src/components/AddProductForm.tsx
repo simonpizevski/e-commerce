@@ -12,8 +12,8 @@ const AddProductForm = () => {
     const handleImageUpload = async (file: File) => {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", "ml_default"); // Cloudinary preset
-        formData.append("folder", "ecommerce"); // Valfri Cloudinary-mapp
+        formData.append("upload_preset", "ml_default");
+        formData.append("folder", "ecommerce");
 
         try {
             setIsUploading(true);
@@ -43,7 +43,7 @@ const AddProductForm = () => {
         e.preventDefault();
         const product = { name, description, price, image, stock };
 
-        const response = await fetch("/api/products", {
+        const response = await fetch("/api/products/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
