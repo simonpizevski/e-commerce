@@ -8,12 +8,10 @@ const ProductSchema = new Schema(
     image: { type: String, required: false },
     stock: { type: Number, required: true },
     category: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,
   },
 );
 
-const Product = models.Product || model("Product", ProductSchema);
-export default Product;
+export const Product = models.Product || model("Product", ProductSchema, "products");

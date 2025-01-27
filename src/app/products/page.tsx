@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Container, Typography, CircularProgress, Box } from "@mui/material";
 import ProductCard from "@/components/ProductCard";
+import { useCart} from "@/context/CartContext";
 
 interface Product {
     _id: string;
@@ -16,12 +17,14 @@ interface Product {
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
+    const { addToCart } = useCart();
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const res = await fetch("/api/products");
                 const data = await res.json();
+                console.log("Fetched products:", data);
                 setProducts(data);
             } catch (error) {
                 console.error("Error fetching products:", error);
@@ -55,6 +58,8 @@ export default function ProductsPage() {
                             description={product.description}
                             price={product.price}
                             image={product.image}
+                            stock={product.stock}
+                            onAddToCart={() => addToCart(product)}
                         />
                     ))}
                 </Box>

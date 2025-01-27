@@ -1,25 +1,19 @@
 "use client";
 
-import { AppBar, Toolbar, Typography, Button, Box, IconButton } from "@mui/material";
+import { AppBar, Toolbar, Typography, IconButton, Badge } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HomeIcon from "@mui/icons-material/Home";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/CartContext";
 
 export default function Header() {
     const router = useRouter();
+    const { totalItems } = useCart();
 
     return (
         <AppBar position="sticky" sx={{ backgroundColor: "#1976d2", color: "white" }}>
             <Toolbar>
-                <IconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="home"
-                    sx={{ mr: 2 }}
-                    onClick={() => router.push("/")}
-                >
+                <IconButton edge="start" color="inherit" aria-label="home" onClick={() => router.push("/")}>
                     <HomeIcon />
                 </IconButton>
 
@@ -37,29 +31,14 @@ export default function Header() {
                     My E-commerce
                 </Typography>
 
-                <Box sx={{ display: { xs: "none", sm: "flex" }, gap: 2 }}>
-                    <Button
-                        color="inherit"
-                        startIcon={<ShoppingCartIcon />}
-                        onClick={() => router.push("/products")}
-                    >
-                        Products
-                    </Button>
-                    <Button
-                        color="inherit"
-                        startIcon={<AdminPanelSettingsIcon />}
-                        onClick={() => router.push("/admin")}
-                    >
-                        Admin
-                    </Button>
-                </Box>
-
                 <IconButton
                     color="inherit"
-                    aria-label="menu"
-                    sx={{ display: { sm: "none" } }}
+                    onClick={() => router.push("/cart")}
+                    aria-label="go to cart"
                 >
-                    <MenuIcon />
+                    <Badge badgeContent={totalItems} color="error">
+                        <ShoppingCartIcon />
+                    </Badge>
                 </IconButton>
             </Toolbar>
         </AppBar>

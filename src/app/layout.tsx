@@ -1,10 +1,11 @@
 "use client";
 
-import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { CssBaseline, ThemeProvider, createTheme, Box } from "@mui/material";
 import { ReactNode } from "react";
 import { SessionProvider } from "next-auth/react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { CartProvider } from "@/context/CartContext";
 
 const darkTheme = createTheme({
   palette: {
@@ -18,9 +19,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <ThemeProvider theme={darkTheme}>
           <CssBaseline />
-          <Header />
-          <SessionProvider>{children}</SessionProvider>
-          <Footer />
+          <SessionProvider>
+            <CartProvider>
+              <Header />
+              {children}
+            </CartProvider>
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

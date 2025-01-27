@@ -18,6 +18,8 @@ export default function LoginPage() {
             redirect: false,
         });
 
+        console.log("signIn response:", response);
+
         if (!response?.error) {
             router.push("/");
         } else {

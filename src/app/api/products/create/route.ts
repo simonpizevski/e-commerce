@@ -9,8 +9,7 @@ export async function POST(req: NextRequest) {
     await connectToDB();
 
     const session = await getServerSession({ req, ...authOptions });
-
-    if (!session || session.user?.role !== "admin") {
+    if (!session || (session.user as { role: string })?.role !== "admin") {
         return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 

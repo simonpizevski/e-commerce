@@ -1,16 +1,25 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const OrderSchema = new Schema({
-  products: [
+interface Order extends Document {
+  userEmail: string;
+  items: { name: string; quantity: number; price: number }[];
+  total: number;
+  status: string;
+  createdAt: Date;
+}
+
+const OrderSchema = new Schema<Order>({
+  userEmail: { type: String, required: true },
+  items: [
     {
-      productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-      quantity: { type: Number, required: true },
+      name: String,
+      quantity: Number,
+      price: Number,
     },
   ],
   total: { type: Number, required: true },
-  customer: { type: String, required: true },
-  status: { type: String, default: "Pending" },
+  status: { type: String, default: "Processing" },
+  createdAt: { type: Date, default: Date.now },
 });
 
-const Order = models.Order || model("Order", OrderSchema);
-export default Order;
+export default mongoose.models.Order || mongoose.model<Order>("Order", OrderSchema);

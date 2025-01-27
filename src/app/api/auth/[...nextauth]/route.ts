@@ -1,16 +1,13 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
-import { clientPromise } from "@/utils/mongoAdapter";
 import User from "@/models/User";
 
 export const authOptions: AuthOptions = {
-    adapter: MongoDBAdapter(clientPromise),
     providers: [
         CredentialsProvider({
-            name: "Credentials",
+            name: "Login",
             credentials: {
                 email: { label: "Email", type: "text" },
                 password: { label: "Password", type: "password" },
@@ -18,7 +15,7 @@ export const authOptions: AuthOptions = {
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
                     console.error("Email and password are required!");
-                    throw new Error("Email och lösenord krävs!");
+                    throw new Error("Email and password required!");
                 }
 
                 await mongoose.connect(process.env.MONGODB_URI || "");
@@ -34,6 +31,7 @@ export const authOptions: AuthOptions = {
                     credentials.password,
                     user.password
                 );
+                console.log("Password correctness:", isPasswordCorrect);
 
                 if (!isPasswordCorrect) {
                     console.error("Incorrect password!");
@@ -41,6 +39,7 @@ export const authOptions: AuthOptions = {
                 }
 
                 console.log("User authenticated successfully");
+
                 return {
                     id: user._id,
                     email: user.email,
@@ -51,14 +50,21 @@ export const authOptions: AuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user }) {
-            if (user) {
+            if (user && 'role' in user) {
                 token.role = user.role;
             }
             return token;
         },
         async session({ session, token }) {
+            console.log("Session callback token:", token);
             if (token) {
                 session.user.role = token.role;
+
+                const user = await User.findById(token.sub);
+                if (!user) {
+                    console.log("User not found, ending session.");
+                    return null;
+                }
             }
             return session;
         },
@@ -67,6 +73,7 @@ export const authOptions: AuthOptions = {
         strategy: "jwt",
     },
     secret: process.env.NEXTAUTH_SECRET,
+    csrf: true,
 };
 
 const handler = NextAuth(authOptions);
