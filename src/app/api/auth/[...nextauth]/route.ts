@@ -1,7 +1,6 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import mongoose from "mongoose";
 import { connectToDB } from "@/lib/db";
 import User from "@/models/User";
 
@@ -67,10 +66,9 @@ export const authOptions: AuthOptions = {
                     role: token.role,
                 };
 
-                // Kontrollera om token fortfarande är giltig
                 if (Date.now() > (token.expires as number)) {
                     console.log("Session expired, logging out...");
-                    return null; // Sessionen har gått ut
+                    return null;
                 }
             }
 
