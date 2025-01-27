@@ -1,11 +1,10 @@
 import { NextResponse, NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 import { connectToDB } from "@/lib/db";
-import {User} from "@/models/User";
+import User from "@/models/User";
 
 export async function middleware(request: NextRequest) {
     const token = request.headers.get("Authorization")?.replace("Bearer ", "");
-
     const pathname = new URL(request.url).pathname;
 
     if (!token) {

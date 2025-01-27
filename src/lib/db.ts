@@ -6,16 +6,22 @@ if (!MONGODB_URI) {
     throw new Error("Please define the MONGODB_URI environment variable.");
 }
 
-export const connectToDB = async () => {
-    if (mongoose.connection.readyState === 1) {
+let isConnected = false;
+
+export const connectToDB = async (): Promise<void> => {
+    if (isConnected && mongoose.connection.readyState === 1) {
         console.log("MongoDB is already connected.");
         return;
     }
 
     try {
-        await mongoose.connect(MONGODB_URI, { dbName: "ecommerce" });
+        const connection = await mongoose.connect(MONGODB_URI, {
+            dbName: "ecommerce",
+        });
+        isConnected = !!connection.connections[0].readyState;
         console.log("Successfully connected to MongoDB!");
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
+        throw new Error("Failed to connect to MongoDB");
     }
 };

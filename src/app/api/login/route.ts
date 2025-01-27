@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import {connectToDB} from "@/lib/db";
-import {User} from "@/models/User";
+import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import rateLimit from "express-rate-limit";
 
@@ -48,8 +48,8 @@ export const POST = loginRateLimiter(async (request: Request) => {
                 email: user.email,
                 role: user.role,
             },
-            process.env.JWT_SECRET || "",
-            { expiresIn: "1h" }
+            process.env.JWT_SECRET || "default-secret-key",
+            { expiresIn: "30m" }
         );
 
         return NextResponse.json({

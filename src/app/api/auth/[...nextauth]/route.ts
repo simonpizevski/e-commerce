@@ -2,6 +2,7 @@ import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import { connectToDB } from "@/lib/db";
 import User from "@/models/User";
 
 export const authOptions: AuthOptions = {
@@ -13,15 +14,16 @@ export const authOptions: AuthOptions = {
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
+                await connectToDB();
+                console.log("Connected to MongoDB in auth");
+
                 if (!credentials?.email || !credentials?.password) {
                     console.error("Email and password are required!");
                     throw new Error("Email and password required!");
                 }
 
-                await mongoose.connect(process.env.MONGODB_URI || "");
-                console.log("Connected to MongoDB in auth");
-
-                const user = await User.findOne({ email: credentials.email });
+                const normalizedEmail = credentials.email.trim().toLowerCase();
+                const user = await User.findOne({ email: normalizedEmail });
                 if (!user) {
                     console.error("User not found!");
                     throw new Error("User not found!");
@@ -50,27 +52,34 @@ export const authOptions: AuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user }) {
-            if (user && 'role' in user) {
-                token.role = user.role;
+            if (user) {
+                token.id = user.id; // Lagra användarens ID i token
+                token.role = user.role; // Lagra användarroll i token
+                token.expires = Date.now() + 30 * 60 * 1000; // Lägg till ett utgångsdatum på 30 minuter
             }
             return token;
         },
         async session({ session, token }) {
-            console.log("Session callback token:", token);
             if (token) {
-                session.user.role = token.role;
+                session.user = {
+                    ...session.user,
+                    id: token.id,
+                    role: token.role,
+                };
 
-                const user = await User.findById(token.sub);
-                if (!user) {
-                    console.log("User not found, ending session.");
-                    return null;
+                // Kontrollera om token fortfarande är giltig
+                if (Date.now() > (token.expires as number)) {
+                    console.log("Session expired, logging out...");
+                    return null; // Sessionen har gått ut
                 }
             }
+
             return session;
         },
     },
     session: {
         strategy: "jwt",
+        maxAge: 30 * 60,
     },
     secret: process.env.NEXTAUTH_SECRET,
     csrf: true,

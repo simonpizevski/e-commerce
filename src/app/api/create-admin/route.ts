@@ -13,7 +13,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: "Email and password are required" }, { status: 400 });
         }
 
-        const existingAdmin = await User.findOne({ email });
+        const normalizedEmail = email.trim().toLowerCase();
+
+        const existingAdmin = await User.findOne({ email: normalizedEmail });
         if (existingAdmin) {
             return NextResponse.json({ message: "An admin with this email already exists" }, { status: 400 });
         }
@@ -21,7 +23,7 @@ export async function POST(request: Request) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const admin = await User.create({
-            email,
+            email: normalizedEmail,
             password: hashedPassword,
             role: "admin",
         });

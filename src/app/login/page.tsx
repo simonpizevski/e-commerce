@@ -20,8 +20,17 @@ export default function LoginPage() {
 
         console.log("signIn response:", response);
 
-        if (!response?.error) {
-            router.push("/");
+        if (response && !response.error) {
+            const res = await fetch("/api/auth/session");
+            const session = await res.json();
+
+            console.log("Session data:", session);
+
+            if (session?.user?.role === "admin") {
+                router.push("/admin");
+            } else {
+                router.push("/");
+            }
         } else {
             alert("Felaktigt lösenord eller email.");
         }
