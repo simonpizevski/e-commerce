@@ -52,9 +52,9 @@ export const authOptions: AuthOptions = {
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token.id = user.id; // Lagra användarens ID i token
-                token.role = user.role; // Lagra användarroll i token
-                token.expires = Date.now() + 30 * 60 * 1000; // Lägg till ett utgångsdatum på 30 minuter
+                token.id = user.id;
+                token.role = user.role;
+                token.expires = Date.now() + 30 * 60 * 1000;
             }
             return token;
         },

@@ -68,6 +68,12 @@ const AddProductForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMessage("");
+
+        if (!name.trim() || !description.trim() || !category.trim() || !image.trim() || price <= 0 || stock <= 0 ) {
+            setErrorMessage("Please fill out all required fields and ensure prices and quantities are valid.");
+            return;
+        }
+
         const product = { name, description, price, image, category, stock };
 
         const response = await fetch("/api/products/create", {

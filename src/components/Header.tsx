@@ -1,7 +1,6 @@
 "use client";
 
-import { AppBar, Toolbar, Typography, IconButton, Badge } from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { AppBar, Toolbar, Typography, IconButton, Box } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
@@ -11,35 +10,70 @@ export default function Header() {
     const { totalItems } = useCart();
 
     return (
-        <AppBar position="sticky" sx={{ backgroundColor: "#1976d2", color: "white" }}>
+        <AppBar position="sticky" sx={{ backgroundColor: "primary", color: "white" }}>
             <Toolbar>
                 <IconButton edge="start" color="inherit" aria-label="home" onClick={() => router.push("/")}>
                     <HomeIcon />
                 </IconButton>
 
-                <Typography
-                    variant="h6"
+                <Box
                     sx={{
                         flexGrow: 1,
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 4,
+                    }}
+                >
+                    <Typography
+                        variant="body1"
+                        onClick={() => router.push("/products")}
+                        sx={{
+                            cursor: "pointer",
+                            fontWeight: "bold",
+                            "&:hover": { textDecoration: "underline" },
+                        }}
+                    >
+                        Products
+                    </Typography>
+
+                    <Typography
+                        variant="body1"
+                        onClick={() => router.push("/admin")}
+                        sx={{
+                            cursor: "pointer",
+                            fontWeight: "bold",
+                            "&:hover": { textDecoration: "underline" },
+                        }}
+                    >
+                        Admin
+                    </Typography>
+
+                    <Typography
+                        variant="body1"
+                        onClick={() => router.push("/login")}
+                        sx={{
+                            cursor: "pointer",
+                            fontWeight: "bold",
+                            "&:hover": { textDecoration: "underline" },
+                        }}
+                    >
+                        Login
+                    </Typography>
+                </Box>
+
+                <Typography
+                    variant="body1"
+                    sx={{
                         cursor: "pointer",
                         fontWeight: "bold",
-                        textTransform: "uppercase",
-                        letterSpacing: 1,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
                     }}
-                    onClick={() => router.push("/")}
-                >
-                    My E-commerce
-                </Typography>
-
-                <IconButton
-                    color="inherit"
                     onClick={() => router.push("/cart")}
-                    aria-label="go to cart"
                 >
-                    <Badge badgeContent={totalItems} color="error">
-                        <ShoppingCartIcon />
-                    </Badge>
-                </IconButton>
+                    Cart ({totalItems})
+                </Typography>
             </Toolbar>
         </AppBar>
     );
