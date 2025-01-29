@@ -11,7 +11,6 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ name, description, price, image, stock, onAddToCart }) => {
-    console.log("Rendering product:", { name, description, price, image, stock });
 
     const [showSnackbar, setShowSnackbar] = useState(false);
 
@@ -27,7 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ name, description, price, ima
                 height="200"
                 image={image}
                 alt={name}
-                sx={{ objectFit: "cover" }}
+                sx={{ }}
             />
             <CardContent>
                 <Typography gutterBottom variant="h6" component="div">
@@ -70,7 +69,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ name, description, price, ima
                 open={showSnackbar}
                 autoHideDuration={2000}
                 onClose={() => setShowSnackbar(false)}
-                message="Produkten har lagts till i kundvagnen!"
+                message="Product have been added to !"
             />
         </Card>
     );

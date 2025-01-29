@@ -14,15 +14,6 @@ const AddProductForm = () => {
     const [previewImage, setPreviewImage] = useState<string>("");
     const categories = ["T-shirts", "Pants", "Shoes", "Accessories"];
 
-    const validateFile = (file: File): boolean => {
-        const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-        if (!allowedTypes.includes(file.type)) {
-            setErrorMessage("Unsupported file type. Please upload a JPG, PNG, or GIF image.");
-            return false;
-        }
-        return true;
-    };
-
     const handleImageUpload = async (file: File) => {
         const formData = new FormData();
         formData.append("file", file);
@@ -54,6 +45,15 @@ const AddProductForm = () => {
         } finally {
             setIsUploading(false);
         }
+    };
+
+    const validateFile = (file: File): boolean => {
+        const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+        if (!allowedTypes.includes(file.type)) {
+            setErrorMessage("Unsupported file type. Please upload a JPG, PNG, or GIF image.");
+            return false;
+        }
+        return true;
     };
 
     const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

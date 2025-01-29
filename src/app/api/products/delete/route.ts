@@ -4,10 +4,15 @@ import { NextResponse, NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
+interface User {
+    email?: string | null;
+    role?: string;
+}
+
 export async function DELETE(req: NextRequest) {
     await connectToDB();
 
-    const session = await getServerSession({req, ...authOptions});
+    const session = await getServerSession({req, ...authOptions}) as {user: User};
 
     if (!session || !session.user || session.user.role !== "admin") {
         return NextResponse.json({error: "Unauthorized"}, {status: 401});
@@ -15,7 +20,7 @@ export async function DELETE(req: NextRequest) {
 
     try {
         const url = new URL(req.url);
-        const productId = url.searchParams.get("id"); // Hämta produkt-ID som query-parameter
+        const productId = url.searchParams.get("id");
 
         if (!productId) {
             return NextResponse.json({error: "Product ID is required"}, {status: 400});

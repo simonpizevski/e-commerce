@@ -26,7 +26,7 @@ export default function CartPage() {
                                 <ListItem>
                                     <ListItemText
                                         primary={`${item.name}`}
-                                        secondary={`Qty: ${item.quantity} | Pris: ${item.price} kr`}
+                                        secondary={`Qty: ${item.quantity} | Price: ${item.price} kr`}
                                     />
                                     <Button
                                         variant="outlined"

@@ -14,17 +14,14 @@ export const authOptions: AuthOptions = {
             },
             async authorize(credentials) {
                 await connectToDB();
-                console.log("Connected to MongoDB in auth");
 
                 if (!credentials?.email || !credentials?.password) {
-                    console.error("Email and password are required!");
-                    throw new Error("Email and password required!");
+                    throw new Error("Both email and password required!");
                 }
 
                 const normalizedEmail = credentials.email.trim().toLowerCase();
                 const user = await User.findOne({ email: normalizedEmail });
                 if (!user) {
-                    console.error("User not found!");
                     throw new Error("User not found!");
                 }
 
@@ -35,11 +32,8 @@ export const authOptions: AuthOptions = {
                 console.log("Password correctness:", isPasswordCorrect);
 
                 if (!isPasswordCorrect) {
-                    console.error("Incorrect password!");
-                    throw new Error("Fel lösenord!");
+                    throw new Error("Invalid password!");
                 }
-
-                console.log("User authenticated successfully");
 
                 return {
                     id: user._id,
@@ -56,6 +50,12 @@ export const authOptions: AuthOptions = {
                 token.role = user.role;
                 token.expires = Date.now() + 30 * 60 * 1000;
             }
+
+            if (Date.now() > (token.expires as number)) {
+                console.warn("JWT token expired");
+                return null;
+            }
+
             return token;
         },
         async session({ session, token }) {
@@ -71,7 +71,6 @@ export const authOptions: AuthOptions = {
                     return null;
                 }
             }
-
             return session;
         },
     },

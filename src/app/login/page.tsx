@@ -18,13 +18,9 @@ export default function LoginPage() {
             redirect: false,
         });
 
-        console.log("signIn response:", response);
-
         if (response && !response.error) {
             const res = await fetch("/api/auth/session");
             const session = await res.json();
-
-            console.log("Session data:", session);
 
             if (session?.user?.role === "admin") {
                 router.push("/admin");
@@ -38,12 +34,12 @@ export default function LoginPage() {
 
     return (
         <form onSubmit={handleLogin}>
-            <h1>Logga in</h1>
+            <h1>Log in</h1>
             <label>Email:</label>
             <input type="email" name="email" required />
-            <label>Lösenord:</label>
+            <label>Password:</label>
             <input type="password" name="password" required />
-            <button type="submit">Logga in</button>
+            <button type="submit">Log in</button>
         </form>
     );
 }
