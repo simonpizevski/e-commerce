@@ -33,11 +33,19 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCartItems((prevItems) => {
             const existingItem = prevItems.find((item) => item._id === product._id);
             if (existingItem) {
+                if (existingItem.quantity + 1 > product.stock) {
+                    alert(`Sorry, only ${product.stock} items available in stock.`);
+                    return prevItems;
+                }
                 return prevItems.map((item) =>
                     item._id === product._id
                         ? { ...item, quantity: item.quantity + 1 }
                         : item
                 );
+            }
+            if (product.stock <= 0) {
+                alert("Sorry, this product is out of stock.");
+                return prevItems;
             }
             return [...prevItems, { ...product, quantity: 1 }];
         });

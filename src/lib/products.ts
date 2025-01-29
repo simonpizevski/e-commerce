@@ -1,7 +1,7 @@
 import {Product} from "@/models/Product";
 
 export async function getAllProducts() {
-    return await Product.find({});
+    return Product.find({});
 }
 
 export async function getProductById(id: string) {

@@ -96,6 +96,7 @@ const AddProductForm = () => {
             setPreviewImage("");
             setCategory("");
         } else {
+            alert("Failed to add product.")
             console.error("Failed to add product");
         }
     };

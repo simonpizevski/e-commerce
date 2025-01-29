@@ -62,7 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ name, description, price, ima
                 >
                     Add to Cart
                 </Button>
-                <Button size="small" variant="outlined" color="secondary">
+                <Button size="small" variant="outlined" color="secondary" disabled>
                     View More
                 </Button>
             </CardActions>
